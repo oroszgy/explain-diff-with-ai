@@ -1,17 +1,37 @@
-name: 'GPT Explain Diff'
-description: 'Asks OpenAI GPT to explain a git diff'
+name: 'Explain Diff with AI'
+description: 'Asks an LLM to explain a git diff'
 inputs:
   diff:
     description: 'The Git diff to be explained'
     required: true
-  apikey:
+  apiKey:
     description: 'The OpenAI API key'
     required: true
+  baseUrl:
+    description: The base url of the OpenAI compatible LLM
+    required: false
+    default: "https://api.openai.com/v1/completions"
+  model:
+    description: LLM model used for explaining the diff
+    required: false
+    default: "gpt-3.5-turbo-instruct"
+  maxTokens:
+    description: maximum number of tokens expected from the LLM
+    required: false
+    default: 2048
+  temperature:
+    description: The temperature of the LLM
+    required: false
+    default: 0.5
+  prompt:
+    description: Prompt instruction the LLM to explain the diff
+    required: false
+    default: "Please explain the changes in the following diff, while ignoring any libraries folders that were added:"
 outputs:
   explanation: # response from GPT
     description: 'The explanation received from GPT'
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'index.js'
 branding:
   icon: 'message-square'

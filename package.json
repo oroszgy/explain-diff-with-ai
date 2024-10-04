@@ -1,24 +1,27 @@
 {
-  "name": "hello-world-javascript-action",
-  "version": "1.0.0",
-  "description": "This action prints \"Hello World\" or \"Hello\" + the name of a person to greet to the log.",
+  "name": "explain-diff-with-ai-action",
+  "version": "0.1.0",
+  "description": "This action explains a git diff using AI",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/hello-world-javascript-action.git"
+    "url": "https://github.com/oroszgy/explain-w-ai-test.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "ai",
+    "llm",
+    "git",
+    "diff"
+  ],
+  "author": "Gyorgy Orosz",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/actions/hello-world-javascript-action/issues"
+    "url": "https://github.com/oroszgy/explain-w-ai-test/issues"
   },
-  "homepage": "https://github.com/actions/hello-world-javascript-action#readme",
+  "homepage": "https://github.com/oroszgy/explain-w-ai-test",
   "dependencies": {
-    "@actions/core": "^1.6.0",
-    "@actions/github": "^5.0.1"
+    "@actions/core": "^1.11.0",
+    "@actions/github": "^5.1.1",
+    "got": "~11.8.2"
   }
 }

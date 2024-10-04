@@ -1,46 +1,42 @@
-const request = require('request');
-
+const got = require('got');
+const core = require('@actions/core');
 async function run() {
-    const diff = process.env.INPUT_DIFF;
-    const apiKey = process.env.INPUT_APIKEY;
+    try {
+        const options = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.INPUT_APIKEY}`,
+            },
+            json: {
+                model: String(process.env.INPUT_MODEL),
+                prompt: `${process.env.INPUT_PROMPT}:\n${process.env.INPUT_DIFF}`,
+                max_tokens: parseInt(process.env.INPUT_MAXTOKENS),
+                temperature: parseFloat(process.env.INPUT_TEMPERATURE),
+            },
+            responseType: 'json'
+        }
+        const url = process.env.INPUT_BASEURL
 
-    const options = {
-        url: 'https://api.openai.com/v1/engines/davinci/jobs',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`,
-        },
-        json: {
-            prompt: `Please explain the changes in the following diff, while ignoring any libraries folders that were added:\n${diff}`,
-            max_tokens: 2048,
-            temperature: 0.5,
-        },
-    };
+        // Debug
+        console.log(url)
+        console.log(options)
 
-    return new Promise((resolve, reject) => {
-        request(options, (error, response, body) => {
-            if (error) {
-                reject(error);
-                return;
-            }
+        const response = await got.post(url, options);
 
-            if (response.statusCode !== 200) {
-                reject(body);
-                return;
-            }
+        const explanation = response.body.choices[0].text;
+        console.log('Explanation:', explanation);
+        core.setOutput("explanation", explanation)
 
-            const explanation = body.choices[0].text;
-            resolve(explanation);
-        });
-    });
+    } catch (error) {
+        if (error.response) {
+            console.error('Error Response:', error.response.statusCode);
+            console.error('Error Details:', error.response.body);
+            core.setFailed(error.response.body)
+        } else {
+            console.error('Request failed:', error);
+            core.setFailed(error.message)
+        }
+    }
 }
 
-run().then(explanation => {
-    console.log(explanation);
-    console.log(`::set-output name=explanation::${explanation}`);
-    process.exit(0);
-}).catch(error => {
-    console.error(error);
-    process.exit(1);
-});
+run().then(() => console.log("Finished"));

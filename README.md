@@ -1,4 +1,4 @@
-# GPT Explain Diff JavaScript action
+# Explain Diff with AI action
 
 This action receives as input a git diff (e.g. a PR diff) and asks chatgpt to summarize and explain the changes made in that diff.
 
@@ -16,7 +16,7 @@ This action receives as input a git diff (e.g. a PR diff) and asks chatgpt to su
 
 ### `explanation`
 
-The explanation from GPT3
+The explanation from the LLM
 
 ## Example usage
 
