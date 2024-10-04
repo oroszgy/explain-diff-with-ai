@@ -10,11 +10,11 @@ inputs:
   baseUrl:
     description: The base url of the OpenAI compatible LLM
     required: false
-    default: "https://api.openai.com/v1/completions"
+    default: "https://api.openai.com/v1/chat/completions"
   model:
     description: LLM model used for explaining the diff
     required: false
-    default: "gpt-3.5-turbo-instruct"
+    default: "gpt-4o-mini"
   maxTokens:
     description: maximum number of tokens expected from the LLM
     required: false

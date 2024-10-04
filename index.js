@@ -1,5 +1,6 @@
 const got = require('got');
 const core = require('@actions/core');
+
 async function run() {
     try {
         const options = {
@@ -9,7 +10,7 @@ async function run() {
             },
             json: {
                 model: String(process.env.INPUT_MODEL),
-                prompt: `${process.env.INPUT_PROMPT}:\n${process.env.INPUT_DIFF}`,
+                messages: [{"role": "user", "content": `${process.env.INPUT_PROMPT}:\n${process.env.INPUT_DIFF}`}],
                 max_tokens: parseInt(process.env.INPUT_MAXTOKENS),
                 temperature: parseFloat(process.env.INPUT_TEMPERATURE),
             },
@@ -18,22 +19,22 @@ async function run() {
         const url = process.env.INPUT_BASEURL
 
         // Debug
-        console.log(url)
-        console.log(options)
+        core.debug(url)
+        core.debug(options.toString())
 
         const response = await got.post(url, options);
 
-        const explanation = response.body.choices[0].text;
-        console.log('Explanation:', explanation);
+        const explanation = response.body.choices[0].message.content;
+        core.info('Explanation:\n' + explanation);
         core.setOutput("explanation", explanation)
 
     } catch (error) {
         if (error.response) {
-            console.error('Error Response:', error.response.statusCode);
-            console.error('Error Details:', error.response.body);
+            core.error('Error Response: ' + error.response.statusCode);
+            core.error('Error Details: ' + error.response.body);
             core.setFailed(error.response.body)
         } else {
-            console.error('Request failed:', error);
+            core.error('Request failed:\n' + error);
             core.setFailed(error.message)
         }
     }
