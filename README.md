@@ -1,6 +1,6 @@
 # Explain Diff with AI action
 
-This action receives as input a git diff (e.g. a PR diff) and asks chatgpt to summarize and explain the changes made in that diff.
+This action receives as input a git diff (e.g. a PR diff) and asks a LLM to summarize and explain the changes made in that diff.
 
 ## Inputs
 
@@ -11,6 +11,13 @@ This action receives as input a git diff (e.g. a PR diff) and asks chatgpt to su
 ### `apikey`
 
 **Required** Your OpenAI api key. See "[OpenAI API](https://openai.com/api/)"
+
+### Optional parameters are:
+- `baseUrl`: The base url of the OpenAI compatible LLM
+- `model`: LLM  used for explaining the diff
+- `maxTokens`: Maximum number of tokens expected from the LLM
+- `temperature`: The temperature parameter passed to the LLM
+- `prompt`: Instruction for the LLM to explain the diff
 
 ## Outputs
 
@@ -38,46 +45,8 @@ jobs:
     steps:
     - name: Explain Diff
       id: explain
-      uses: actions/explain-diff
+      uses: oroszgy/explain-diff-with-ai@main
       with:
         diff: ${{ env.DIFF }}
         apikey: ${{ secrets.OPENAI_APIKEY }}
-```
-
-### To explain the changes made in a PR and post the result as a comment in the PR itself
-```yaml
-name: Explain PR
-
-on:
-  pull_request:
-    types: [opened, synchronize]
-
-env:
-  DIFF: ${{ compare(github.base_ref, github.head_ref) }}
-
-jobs:
-  explain-diff:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Explain Diff
-      id: explain
-      uses: actions/explain-diff
-      with:
-        diff: ${{ env.DIFF }}
-        apikey: ${{ secrets.OPENAI_APIKEY }}
-    
-    - name: Post Comment
-      uses: actions/github-script@0.9.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      if: steps.explain.outputs.explanation
-      run: |
-        const octokit = require('@octokit/rest')({ auth: process.env.GITHUB_TOKEN });
-        octokit.pulls.createComment({
-          owner: context.repo.owner,
-          repo: context.repo.repo,
-          pull_number: context.payload.pull_request.number,
-          body: steps.explain.outputs.explanation
-        });
 ```

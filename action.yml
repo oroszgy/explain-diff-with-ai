@@ -12,7 +12,7 @@ inputs:
     required: false
     default: "https://api.openai.com/v1/chat/completions"
   model:
-    description: LLM model used for explaining the diff
+    description: LLM used for explaining the diff
     required: false
     default: "gpt-4o-mini"
   maxTokens:
